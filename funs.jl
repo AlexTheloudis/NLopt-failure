@@ -96,8 +96,8 @@ function CRRA(x::Float64,p::Param)
 end
 
 function objfun(c1::Float64,c2::Float64,q::Float64,p::Param)
-	x1 = p.mu1 * (p.alpha * CRRA(c1,p)) + (1-p.alpha) * CRRA(q,p)
-	x2 = p.mu2 * (p.alpha * CRRA(c2,p)) + (1-p.alpha) * CRRA(q,p)
+	x1 = p.mu1 * (p.alpha * CRRA(c1,p) + (1-p.alpha) * CRRA(q,p))
+	x2 = p.mu2 * (p.alpha * CRRA(c2,p) + (1-p.alpha) * CRRA(q,p))
 	#check constraint
 	if c1 + c2 + q > p.resources
 		return p.myNA
@@ -125,7 +125,7 @@ end
 function doGridSearch()
 	for res in [10.0,100,900]
 		p = Param(res)
-		x = gridSearch(p)
+		@time x = gridSearch(p)
 		println("results for resources = $(p.resources)")
 		println(x)
 	end
