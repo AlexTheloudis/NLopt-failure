@@ -67,7 +67,7 @@ function doNLopt()
 	  equality_constraint!(alexTheloudis, (x,g) -> constraint(x, g, resources), 1e-6)
 	  @time (fval,x_optimal,return_flag) = optimize(alexTheloudis,[resources/3;resources/3;resources/3])
 
-	  println("I got fval=",fval," at ",x_optimal)
+	  println("I got fval=",fval," at ",x_optimal," with exit flag ",return_flag)
 	  println("")
 	end #ixr
 end
