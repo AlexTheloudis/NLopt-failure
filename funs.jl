@@ -52,6 +52,7 @@ function doNLopt()
 
 	# Now I will carry out 3 rounds of optimisation,
 	# each with different levels of household resources:
+  println("STARTING NLopt:")
 	for ixr = 1:1:3
 
 	  if     ixr == 1
@@ -65,10 +66,10 @@ function doNLopt()
 
 	  max_objective!(alexTheloudis, (x,g) -> objectivef(x, g))
 	  equality_constraint!(alexTheloudis, (x,g) -> constraint(x, g, resources), 1e-6)
-	  @time (fval,x_optimal,return_flag) = optimize(alexTheloudis,[resources/3;resources/3;resources/3])
+	  (fval,x_optimal,return_flag) = optimize(alexTheloudis,[resources/3;resources/3;resources/3])
 
 	  println("I got fval=",fval," at ",x_optimal," with exit flag ",return_flag)
-	  println("")
+	  println("-----------")
 	end #ixr
 end
 
@@ -125,11 +126,34 @@ end
 function doGridSearch()
 	for res in [10.0,100,900]
 		p = Param(res)
-		@time x = gridSearch(p)
+		x = gridSearch(p)
 		println("results for resources = $(p.resources)")
 		println(x)
 	end
 end
 
+# =================================================
+
+function gridSearch2(p::Param)
+	# Generate grid for c1 given resources:
+	c1 = linspace(0.001,p.resources,p.n)
+  # Generate c2, q such that FOCs are satisfied conditional on c1:
+	c2 = ((p.mu1/p.mu2)^(-1/p.gamma)) * c1
+  q  = (((p.alpha * p.mu1) / ((1-p.alpha)*(p.mu1+p.mu2)))^(-1/p.gamma)) * c1
+  # Evaluate objective:
+  obj = Float64[objfun(c1[i],c2[i],q[i],p) for i in 1:p.n]
+	(value, index) = findmax(obj)
+	return (value, index, [c1 c2 q])
+end
+
+function doGridSearch2()
+  println("STARTING GridSearch2:")
+	for res in [10.0,100.0,900.0]
+		p = Param(res)
+		(value, index, x) = gridSearch2(p)
+		println("Results for resources = $(p.resources). I found $(value) for c1 = $(x[index,1]), c2 = $(x[index,2]) and q = $(x[index,3])")
+    println("-----------")
+	end
+end
 
 

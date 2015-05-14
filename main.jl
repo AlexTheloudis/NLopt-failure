@@ -1,7 +1,10 @@
 include("helloworld.jl")
 
 # Carries out NLopt:
-helloworld.doNLopt()
+@time helloworld.doNLopt()
 
-# Carries out discrete grid search"
-helloworld.doGridSearch()
+# Carries out discrete grid search:
+@time helloworld.doGridSearch()
+@time helloworld.doGridSearch2()
+
+
