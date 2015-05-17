@@ -157,3 +157,28 @@ function doGridSearch2()
 end
 
 
+# =================================================
+
+function objective(c1::Float64,c2::Float64,q::Float64,p::Param)
+	x1 = p.mu1 * (p.alpha * CRRA(c1,p) + (1-p.alpha) * CRRA(q,p))
+	x2 = p.mu2 * (p.alpha * CRRA(c2,p) + (1-p.alpha) * CRRA(q,p))
+	return x1 + x2
+end
+
+function fixedPoint(p::Param)
+  c1 = (1 + (p.mu1/p.mu2)^(-1/p.gamma) + ((p.alpha * p.mu1) / ((1-p.alpha)*(p.mu1+p.mu2)))^(-1/p.gamma))^(-1)*p.resources
+  c2 = (p.mu1/p.mu2)^(-1/p.gamma)*c1
+  q  = ((p.alpha * p.mu1) / ((1-p.alpha)*(p.mu1+p.mu2)))^(-1/p.gamma)*c1
+  value = objective(c1,c2,q,p)
+  return (value,c1,c2,q)
+end
+
+function findFixedPoint()
+  println("STARTING findSolution:")
+	for res in [10.0,100.0,900.0]
+		p = Param(res)
+		(value,c1,c2,q) = fixedPoint(p)
+		println("Results for resources = $(p.resources). I found $(value) for c1 = $(c1), c2 = $(c2) and q = $(q)")
+    println("-----------")
+	end
+end

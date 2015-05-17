@@ -7,6 +7,6 @@ include("utilities.jl")
 include("funs.jl")
 
 # exports
-doNLopt, doGridSearch, doGridSearch2, Param
+doNLopt, doGridSearch, doGridSearch2, findFixedPoint, Param
 
 end #helloworld

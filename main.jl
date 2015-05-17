@@ -7,4 +7,6 @@ include("helloworld.jl")
 @time helloworld.doGridSearch()
 @time helloworld.doGridSearch2()
 
+# Solves for fixed point:
+@time helloworld.findFixedPoint()
 
